@@ -1,8 +1,8 @@
 
 import just
 
-from encoder_decoder import TextEncoderDecoder, text_tokenize
-from model import LSTMBase
+from backend.encoder_decoder import TextEncoderDecoder, text_tokenize
+from backend.model import LSTMBase
 
 TRAINING_TEST_CASES = ["from keras.layers import"]
 
