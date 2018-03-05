@@ -4,6 +4,7 @@ import numpy as np
 from keras.layers import Activation, Dense, LSTM
 from keras.models import Sequential, load_model
 from keras.optimizers import RMSprop
+import matplotlib.pyplot as plt
 
 
 class LSTMBase(object):
@@ -42,7 +43,7 @@ class LSTMBase(object):
             model.add(Dense(num_unique_a_tokens))
             model.add(Activation('softmax'))
             optimizer = RMSprop(lr=0.01)
-            model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+            model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
         return model
 
     def train(self, test_cases=None, iterations=20, batch_size=256, num_epochs=3, **kwargs):
@@ -55,9 +56,10 @@ class LSTMBase(object):
             print()
             print('-' * 50)
             print('Iteration', iteration)
-            self.model.fit(self.encoder_decoder.X, self.encoder_decoder.y,
-                           batch_size=batch_size, nb_epoch=num_epochs,
-                           **kwargs)
+            history = self.model.fit(self.encoder_decoder.X, self.encoder_decoder.y,
+                                     validation_split=0.2, batch_size=batch_size, nb_epoch=num_epochs,
+                                     **kwargs)
+            self.show_plot(history)
             self._show_test_cases(test_cases)
 
     def predict(self, text, diversity, max_prediction_steps, break_at_token=None):
@@ -85,6 +87,26 @@ class LSTMBase(object):
 
     def load(self):
         return load_model(self.h5_path)
+
+    @staticmethod
+    def show_plot(history):
+        print(history.history.keys())
+        # summarize history for accuracy
+        plt.plot(history.history['acc'])
+        plt.plot(history.history['val_acc'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
+        # summarize history for loss
+        plt.plot(history.history['loss'])
+        plt.plot(history.history['val_loss'])
+        plt.title('model loss')
+        plt.ylabel('loss')
+        plt.xlabel('epoch')
+        plt.legend(['train', 'test'], loc='upper left')
+        plt.show()
 
     def _show_test_cases(self, test_cases):
         if test_cases is None:

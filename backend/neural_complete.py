@@ -1,14 +1,14 @@
-
 import just
 
 from backend.encoder_decoder import TextEncoderDecoder, text_tokenize
 from backend.model import LSTMBase
 
-TRAINING_TEST_CASES = ["from keras.layers import"]
+TRAINING_TEST_CASES = ["public class", "pubic static final", "if (", "catch"]
 
 
 def get_data():
-    return list(just.multi_read("data/**/*.py").values())
+    return list(just.multi_read("data-java-post/**/*.txt").values())
+    # return fetch_data.get_data()
 
 
 def train(ted, model_name):
@@ -52,6 +52,7 @@ def neural_complete(model, text, diversities):
 
 if __name__ == "__main__":
     import sys
+
     if len(sys.argv) != 3:
         raise Exception(
             "expecting model name, such as 'neural' and type (either 'char' or 'token'")

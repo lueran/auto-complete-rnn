@@ -9,7 +9,7 @@ def read_models(base_path="models/"):
     return set([x.split(".")[0] for x in os.listdir(base_path)])
 
 
-def predict(sentence="from", model_name="neural_char"):
+def predict(sentence="from", model_name="android_char"):
     if model_name not in models:
         models[model_name] = get_model(model_name)
     suggestions = neural_complete(models[model_name], sentence, [0.2, 0.5, 1])
