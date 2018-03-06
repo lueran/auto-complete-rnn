@@ -1,0 +1,33 @@
+<div class="centered">
+    <mat-card>
+        <h1>
+            {{title}}
+        </h1>
+
+
+            <!--<mat-select placeholder="Choose a model" [(ngModel)]="activeModel" name="activatedModel">-->
+                <!--<mat-option *ngFor="let model of lstmModels" [value]="model">-->
+                    <!--{{model}}-->
+                <!--</mat-option>-->
+            <!--</mat-select>-->
+
+
+
+        <mat-input-container>
+            <input ng2-auto-complete matInput
+                   [(ngModel)]="myData"
+                   [source]="mySource"
+                   path-to-data="data.results"
+                   size="100"
+            />
+        </mat-input-container>
+
+        <button mat-raised-button type="submit" (click)="append()">Add </button>
+
+        <div style="min-height:150px; margin-top:50px" highlight-js-content=".highlight">
+            <code class="highlight java">// generated code follows below</code>
+            <code class="highlight java" *ngFor="let item of codeArray">{{item}}<br/></code>
+        </div>
+
+    </mat-card>
+</div>
