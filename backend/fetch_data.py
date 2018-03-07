@@ -63,7 +63,6 @@ def get_data():
                         line.strip().startswith('*'):
                     line = line.replace(line, '')
                 line = re.sub(r'(class) (\S+)', r'\1 ^C^', line)
- #               m = re.match(r"if \(([a-zA-Z\.\(\)\!0-9]+).[\)|=|<|>|!|&|\|]?", line)
                 line = re.sub(r"if.?\(([a-zA-Z\.\(\)\!0-9]+).[\)|=|<|>|!|&|\|]?", 'if (^E^ ', line)
                 line = re.sub(r"(static final int) ([A-Z0-9_]+)", r"\1 ^P^", line)
                 line = re.sub(r"(static final String) ([A-Z0-9_]+)", r"\1 ^P^", line)

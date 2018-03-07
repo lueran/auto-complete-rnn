@@ -2,38 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="../static/favicon.ico">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link href="../static/style.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="../static/src/ace.js" type="text/javascript" charset="utf-8"></script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Editor</title>
 </head>
 <body>
 <div class="container">
-    <div class="form-group float-label-control" id="suggest-container">
+    <div class="form-group" id="suggest-container">
     </div>
     <div id="editor-container">
         <pre id="editor">
-          # Insert your code below
+          // Insert your java code below
         </pre>
     </div>
 
 </div>
 </body>
-<script src="../static/src/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
-    editor.session.setMode("ace/mode/python");
+    editor.session.setMode("ace/mode/java");
 
-
+    var currRow = '';
     editor.session.on('change', function (delta) {
         if (delta.action === 'insert') {
             var value = editor.getValue();
             var lines = value.split("\n");
-            var currRow = lines[delta.end.row];
-            console.log(currRow);
+            currRow = lines[delta.end.row];
             if (currRow.length >= 3) {
                 $.getJSON('/predict',
                     {
@@ -41,15 +41,19 @@
                     },
                     function (data) {
                         $('#suggestions').remove();
-                        var sel = $('<select id="suggestions">').appendTo('#suggest-container');
+                        var sel = $('<select multiple class="form-control" id="suggestions" onchange="setSuggestion(this);">').appendTo('#suggest-container');
                         for (index in data.data.results) {
-                            sel.append($("<option>").attr('value', index).text(data.data.results[index]));
+                            sel.append($("<option>").attr('value', data.data.results[index]).text(data.data.results[index]));
                         }
                     });
             }
         }
     });
+
+    function setSuggestion(sel) {
+        var val = sel.value;
+        var value = val.replace(currRow.trim(), '');
+        editor.insert(value.trim());
+    }
 </script>
-
-
 </html>
