@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Editor</title>
+    <style type="text/css" media="screen">
+        #editor {
+            margin: 0;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-group float-label-control" id="suggest">
+        <select class="form-control" id="country-list">
+            <option value="AU" data-icon="flag-icon flag-icon-au">Austraila</option>
+            <option value="CH" data-icon="flag-icon flag-icon-ch">China</option>
+            <option value="IN" data-icon="flag-icon flag-icon-in">India</option>
+            <option value="PK" data-icon="flag-icon flag-icon-pk">Pakistan</option>
+            <option value="RS" data-icon="flag-icon flag-icon-rs">Russia</option>
+            <option value="AE" data-icon="flag-icon flag-icon-ae">United Arab Emirates</option>
+            <option value="GB" data-icon="flag-icon flag-icon-gb">United Kingdom</option>
+            <option value="US" data-icon="flag-icon flag-icon-us">United States of America</option>
+            <option value="ZM" data-icon="flag-icon flag-icon-zm">Zimbawe</option>
+        </select>
+    </div>
+    <div>
+        <pre id="editor">
+          # Insert your code below
+        </pre>
+    </div>
+
+</div>
+</body>
+<script src="../static/src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/python");
+
+
+    editor.session.on('change', function (delta) {
+        if (delta.action === 'insert') {
+            var value = editor.getValue();
+            var lines = value.split("\n");
+            var currRow = lines[delta.end.row];
+            console.log(currRow);
+            if (currRow.length >= 3) {
+                $.getJSON('/predict',
+                    {
+                        keyword: currRow
+                    },
+                    function (data) {
+                        var sel = $('<select>').appendTo('#suggestion');
+                        for (index in data.data.results) {
+                            sel.append($("<option>").attr('value', index).text(data.data.results[index]));
+                        }
+                    });
+            }
+        }
+    });
+</script>
+
+
+</html>

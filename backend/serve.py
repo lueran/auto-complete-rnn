@@ -1,6 +1,6 @@
 import os
 from backend.cors import crossdomain
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 from backend.neural_complete import neural_complete
 from backend.neural_complete import get_model
@@ -27,10 +27,9 @@ def get_args(req):
 @crossdomain(origin='*', headers="Content-Type")
 def predict():
     args = get_args(request)
-    sentence = args.get("keyword", "from ")
-    model_name = args.get("model", "neural_char")
-    if model_name not in models:
-        models[model_name] = get_model(model_name)
+    keyword = args.get("keyword", "import")
+    sentence = keyword
+    model_name = "neural_char"
     suggestions = neural_complete(models[model_name], sentence, [0.2, 0.5, 1])
     return jsonify({"data": {"results": [x.strip() for x in suggestions]}})
 
@@ -39,6 +38,18 @@ def predict():
 @crossdomain(origin='*', headers="Content-Type")
 def get_models():
     return jsonify({"data": {"results": list(models)}})
+
+
+@app.route("/", methods=["GET"])
+@crossdomain(origin='*', headers="Content-Type")
+def index():
+    return render_template('editor.html')
+
+
+@app.route("/editor", methods=["GET"])
+@crossdomain(origin='*', headers="Content-Type")
+def editor():
+    return render_template('editor.html')
 
 
 def main(host="127.0.0.1", port=9078):
