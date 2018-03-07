@@ -203,6 +203,7 @@ div.container {
     width: 50%;
 }
 #suggest-container {
+    margin-top: 20px;
   float: left;
   width: 100%;
   height: 100%;

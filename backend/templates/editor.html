@@ -30,23 +30,21 @@
 
     var currRow = '';
     editor.session.on('change', function (delta) {
-        if (delta.action === 'insert') {
-            var value = editor.getValue();
-            var lines = value.split("\n");
-            currRow = lines[delta.end.row];
-            if (currRow.length >= 3) {
-                $.getJSON('/predict',
-                    {
-                        keyword: currRow
-                    },
-                    function (data) {
-                        $('#suggestions').remove();
-                        var sel = $('<select multiple class="form-control" id="suggestions" onchange="setSuggestion(this);">').appendTo('#suggest-container');
-                        for (index in data.data.results) {
-                            sel.append($("<option>").attr('value', data.data.results[index]).text(data.data.results[index]));
-                        }
-                    });
-            }
+        var value = editor.getValue();
+        var lines = value.split("\n");
+        currRow = lines[delta.end.row];
+        if (currRow.length >= 3) {
+            $.getJSON('/predict',
+                {
+                    keyword: currRow.trim()
+                },
+                function (data) {
+                    $('#suggestions').remove();
+                    var sel = $('<select multiple class="form-control" id="suggestions" onchange="setSuggestion(this);">').appendTo('#suggest-container');
+                    for (index in data.data.results) {
+                        sel.append($("<option>").attr('value', data.data.results[index]).text(data.data.results[index]));
+                    }
+                });
         }
     });
 

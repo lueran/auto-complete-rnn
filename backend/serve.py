@@ -29,7 +29,7 @@ def predict():
     args = get_args(request)
     keyword = args.get("keyword", "import")
     sentence = keyword
-    model_name = "neural_char"
+    model_name = "javamodel2_char"
     suggestions = neural_complete(models[model_name], sentence, [0.2, 0.5, 1])
     return jsonify({"data": {"results": [x.strip() for x in suggestions]}})
 
